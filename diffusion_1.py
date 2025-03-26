@@ -1,3 +1,4 @@
+# diffusion.py
 import torch
 import numpy as np
 from reparam_moe import ReparamGaussianMoE  # 导入MoE模块
@@ -71,3 +72,37 @@ class DiffusionProcess:
         noisy_images = sqrt_alpha_cumprod_t * x0 + sqrt_one_minus_alpha_cumprod_t * noise
         
         return noisy_images, noise
+
+    def _generate_mixed_noise(self, x0, p):
+        """生成混合噪声"""
+        mask = torch.rand(x0.size(0), 1, 1, 1, device=x0.device) < p
+        noise1 = torch.randn_like(x0) * 0.95 - 0.3  # N(-0.3, 0.95)
+        noise2 = torch.randn_like(x0) * 0.95 + 0.5  # N(0.5, 0.95)
+        return torch.where(mask, noise1, noise2)
+
+    def _generate_moe_noise(self, x0):
+        """使用MoE生成噪声"""
+        B, C, H, W = x0.shape
+        x_flat = x0.view(B, -1)  # 展平输入
+        moe_noise = self.moe(x_flat)
+        return moe_noise.view(B, C, H, W)  # 恢复形状
+
+    def q_sample(self, x0, t, noise=None):
+        """更方便的扩散采样接口"""
+        if noise is None:
+            noise = torch.randn_like(x0)
+        return (
+            self.sqrt_alphas_cumprod[t] * x0 + 
+            self.sqrt_one_minus_alphas_cumprod[t] * noise
+        )
+
+# 保持原有函数兼容性
+def linear_beta_schedule(timesteps):
+    return DiffusionProcess.linear_beta_schedule(timesteps)
+
+def forward_diffusion_with_different_noise(x0, t, sqrt_alphas_cumprod, sqrt_one_minus_alphas_cumprod, p=0.5):
+    """兼容旧代码的包装函数"""
+    dp = DiffusionProcess(len(sqrt_alphas_cumprod), x0.size(2))
+    dp.sqrt_alphas_cumprod = sqrt_alphas_cumprod
+    dp.sqrt_one_minus_alphas_cumprod = sqrt_one_minus_alphas_cumprod
+    return dp.forward_diffusion(x0, t, p=p, noise_type='mixed')
