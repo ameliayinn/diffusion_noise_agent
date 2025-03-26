@@ -488,4 +488,156 @@ Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
 [33mhint: 	git branch -m <name>[m
 Initialized empty Git repository in /hpc2hdd/home/yli045/diffusion_noise_agent/.git/
 [?2004h(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ git remote add origin https://github.com/ameliayinn/diffusion_noise_agent.git
-[?2004l[?2004h(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ 
+[?2004l[?2004h(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ git add .
+[?2004l[?2004h(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ git comit -m[K[K[K[K[K[Kmmit -m "inital commit"
+[?2004l[master (root-commit) 9a4ab85] inital commit
+ 38 files changed, 2109 insertions(+)
+ create mode 100644 __pycache__/config.cpython-312.pyc
+ create mode 100644 __pycache__/diffusion.cpython-312.pyc
+ create mode 100644 __pycache__/generate.cpython-312.pyc
+ create mode 100644 __pycache__/reparam_moe.cpython-312.pyc
+ create mode 100644 __pycache__/train.cpython-312.pyc
+ create mode 100644 __pycache__/unet.cpython-312.pyc
+ create mode 100644 checkpoints/checkpoints_2025_03_26_02_22/model_is_8_bs_1_tstep_100_tdim_32_epoch_1.pt
+ create mode 100644 checkpoints/checkpoints_2025_03_26_22_57/model_is_8_bs_1_tstep_100_tdim_32_epoch_1.pt
+ create mode 100644 checkpoints/checkpoints_2025_03_26_23_09/model_is_8_bs_1_tstep_100_tdim_32_epoch_1.pt
+ create mode 100644 config.py
+ create mode 100644 diffusion.py
+ create mode 100644 generate.py
+ create mode 100644 log.md
+ create mode 100644 logs/logs_2025_03_26_02_22/is_8_bs_1_tstep_100_tdim_32.csv
+ create mode 100644 logs/logs_2025_03_26_02_22/is_8_bs_1_tstep_100_tdim_32.json
+ create mode 100644 logs/logs_2025_03_26_22_57/is_8_bs_1_tstep_100_tdim_32.csv
+ create mode 100644 logs/logs_2025_03_26_22_57/is_8_bs_1_tstep_100_tdim_32.json
+ create mode 100644 logs/logs_2025_03_26_23_09/is_8_bs_1_tstep_100_tdim_32.csv
+ create mode 100644 logs/logs_2025_03_26_23_09/is_8_bs_1_tstep_100_tdim_32.json
+ create mode 100644 main.py
+ create mode 100644 reparam_moe.py
+ create mode 100644 scripts/script.sh
+ create mode 100644 scripts/script_mnist.sh
+ create mode 100644 scripts/script_normal.sh
+ create mode 100644 scripts/script_normal_dif.sh
+ create mode 100644 scripts/script_normal_dif_test.sh
+ create mode 100644 scripts/script_poisson_dif.sh
+ create mode 100644 scripts/script_poisson_dif_test.sh
+ create mode 100644 simulation.log
+ create mode 100644 test.py
+ create mode 100644 train.py
+ create mode 100644 unet.py
+ create mode 100644 utils/__pycache__/dataloader.cpython-310.pyc
+ create mode 100644 utils/__pycache__/dataloader.cpython-312.pyc
+ create mode 100644 utils/__pycache__/dataloader_with_different_noise.cpython-310.pyc
+ create mode 100644 utils/__pycache__/dataloader_with_different_noise.cpython-312.pyc
+ create mode 100644 utils/dataloader.py
+ create mode 100644 zzzzz.py
+[?2004h(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ git pu sh[K[K[Ksh origin main
+[?2004lerror: src refspec main does not match any
+[31merror: failed to push some refs to 'https://github.com/ameliayinn/diffusion_noise_agent.git'
+[m[?2004h(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ git branch
+[?2004l[?1h=* [32mmaster[m[m
+[K[?1l>[?2004h(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ git branch -M main
+[?2004l[?2004h(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ git push origin main
+[?2004l/usr/bin/gh auth git-credential get: 1: /usr/bin/gh: not found
+Missing or invalid credentials.
+Error: connect ECONNREFUSED /tmp/vscode-git-87b5a362a5.sock
+[90m    at PipeConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)[39m {
+  errno: [33m-111[39m,
+  code: [32m'ECONNREFUSED'[39m,
+  syscall: [32m'connect'[39m,
+  address: [32m'/tmp/vscode-git-87b5a362a5.sock'[39m
+}
+Missing or invalid credentials.
+Error: connect ECONNREFUSED /tmp/vscode-git-87b5a362a5.sock
+[90m    at PipeConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)[39m {
+  errno: [33m-111[39m,
+  code: [32m'ECONNREFUSED'[39m,
+  syscall: [32m'connect'[39m,
+  address: [32m'/tmp/vscode-git-87b5a362a5.sock'[39m
+}
+/usr/bin/gh auth git-credential erase: 1: /usr/bin/gh: not found
+remote: No anonymous write access.
+fatal: Authentication failed for 'https://github.com/ameliayinn/diffusion_noise_agent.git/'
+[?2004h(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ [K(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ [K(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ [K(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ [K(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ [K(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ [K(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ [K(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ git config --global user.email "y1329034994@163.com"
+[?2004l[?2004h(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ git config --global user.name "ameliayin"
+[?2004l[?2004h(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ git config --global user.name "ameliayin"email "y1329034994@163.com"[32Ppush origin main
+[?2004l/usr/bin/gh auth git-credential get: 1: /usr/bin/gh: not found
+Missing or invalid credentials.
+Error: connect ECONNREFUSED /tmp/vscode-git-87b5a362a5.sock
+[90m    at PipeConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)[39m {
+  errno: [33m-111[39m,
+  code: [32m'ECONNREFUSED'[39m,
+  syscall: [32m'connect'[39m,
+  address: [32m'/tmp/vscode-git-87b5a362a5.sock'[39m
+}
+Missing or invalid credentials.
+Error: connect ECONNREFUSED /tmp/vscode-git-87b5a362a5.sock
+[90m    at PipeConnectWrap.afterConnect [as oncomplete] (node:net:1611:16)[39m {
+  errno: [33m-111[39m,
+  code: [32m'ECONNREFUSED'[39m,
+  syscall: [32m'connect'[39m,
+  address: [32m'/tmp/vscode-git-87b5a362a5.sock'[39m
+}
+/usr/bin/gh auth git-credential erase: 1: /usr/bin/gh: not found
+remote: No anonymous write access.
+fatal: Authentication failed for 'https://github.com/ameliayinn/diffusion_noise_agent.git/'
+[?2004h(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ gh auth login
+[?2004lbash: gh: command not found
+[?2004h(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ sudo apt isntall gh[K[K[K[K[K[K[K[K[Knstall gh
+[?2004lReading package lists... 0%Reading package lists... 0%Reading package lists... 0%Reading package lists... 5%Reading package lists... 5%Reading package lists... 5%Reading package lists... 5%Reading package lists... 53%Reading package lists... 53%Reading package lists... 54%Reading package lists... 54%Reading package lists... 61%Reading package lists... 61%Reading package lists... 71%Reading package lists... 71%Reading package lists... 76%Reading package lists... 76%Reading package lists... 76%Reading package lists... 76%Reading package lists... 76%Reading package lists... 76%Reading package lists... 76%Reading package lists... 76%Reading package lists... 83%Reading package lists... 83%Reading package lists... 92%Reading package lists... 92%Reading package lists... 96%Reading package lists... 96%Reading package lists... 96%Reading package lists... 96%Reading package lists... 99%Reading package lists... 99%Reading package lists... Done
+Building dependency tree... 0%Building dependency tree... 0%Building dependency tree... 0%Building dependency tree... 50%Building dependency tree... 50%Building dependency tree... Done
+Reading state information... 0% Reading state information... 0%Reading state information... Done
+The following NEW packages will be installed:
+  gh
+0 upgraded, 1 newly installed, 0 to remove and 55 not upgraded.
+Need to get 6,242 kB of archives.
+After this operation, 33.7 MB of additional disk space will be used.
+[33m0% [Working][0m[33m0% [Waiting for headers][0m                        Get:1 http://archive.ubuntu.com/ubuntu jammy/universe amd64 gh amd64 2.4.0+dfsg1-2 [6,242 kB]
+[33m0% [1 gh 4,050 B/6,242 kB 0%][0m[33m0% [1 gh 5,498 B/6,242 kB 0%][0m[33m1% [1 gh 76.5 kB/6,242 kB 1%][0m[33m                             3% [1 gh 205 kB/6,242 kB 3%][0m[33m3% [1 gh 208 kB/6,242 kB 3%][0m[33m8% [1 gh 637 kB/6,242 kB 10%][0m[33m11% [1 gh 888 kB/6,242 kB 14%][0m[33m15% [1 gh 1,142 kB/6,242 kB 18%][0m[33m27% [1 gh 2,131 kB/6,242 kB 34%][0m[33m29% [1 gh 2,293 kB/6,242 kB 37%][0m[33m36% [1 gh 2,774 kB/6,242 kB 44%][0m[33m51% [1 gh 3,941 kB/6,242 kB 63%]                                                                                 630 kB/s 3s[0m[33m65% [1 gh 5,037 kB/6,242 kB 81%]                                                                                 630 kB/s 1s[0m[33m69% [1 gh 5,357 kB/6,242 kB 86%]                                                                                 630 kB/s 1s[0m[33m80% [1 gh 6,220 kB/6,242 kB 100%]                                                                                630 kB/s 0s[0m[33m100% [Working]                                                                                                   630 kB/s 0s[0m                                                                                                                            Fetched 6,242 kB in 8s (777 kB/s)
+debconf: delaying package configuration, since apt-utils is not installed
+
+7[0;20r8[1ASelecting previously unselected package gh.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 27606 files and directories currently installed.)
+Preparing to unpack .../gh_2.4.0+dfsg1-2_amd64.deb ...
+7[21;0f[42m[30mProgress: [  0%][49m[39m [.......................................................................................................] 87[21;0f[42m[30mProgress: [ 20%][49m[39m [####################...................................................................................] 8Unpacking gh (2.4.0+dfsg1-2) ...
+7[21;0f[42m[30mProgress: [ 40%][49m[39m [#########################################..............................................................] 8Setting up gh (2.4.0+dfsg1-2) ...
+7[21;0f[42m[30mProgress: [ 60%][49m[39m [#############################################################..........................................] 87[21;0f[42m[30mProgress: [ 80%][49m[39m [##################################################################################.....................] 8
+7[0;21r8[1A[J[?2004h(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ gh [K[K[Kgh auth login
+[?2004l7[?25l8[0G[2K[0;1;92m? [0m[0;1;99mWhat account do you want to log into?[0m  [0;36m[Use arrows to move, type to filter][0m
+[0;1;36m> GitHub.com[0m
+[0;39m  GitHub Enterprise Server[0m
+7[1A[0G[1A[0G8[?25h8[0G[2K[1A[0G[2K[1A[0G[2K[1A[0G[2K[0;1;92m? [0m[0;1;99mWhat account do you want to log into?[0m[0;36m GitHub.com[0m
+[0G[2K[0;1;92m? [0m[0;1;99mYou're already logged into github.com. Do you want to re-authenticate? [0m[38;5;242m(y/N) [0m[?25l7[999;999f[6n8[?25h[6ny[1D[1B[0G[1A[0G[0G[2K[0;1;92m? [0m[0;1;99mYou're already logged into github.com. Do you want to re-authenticate? [0m[0;36mYes[0m
+7[?25l8[0G[2K[0;1;92m? [0m[0;1;99mWhat is your preferred protocol for Git operations?[0m  [0;36m[Use arrows to move, type to filter][0m
+[0;1;36m> HTTPS[0m
+[0;39m  SSH[0m
+7[1A[0G[1A[0G8[0G[2K[1A[0G[2K[1A[0G[2K[1A[0G[2K[0;1;92m? [0m[0;1;99mWhat is your preferred protocol for Git operations?[0m  [0;36m[Use arrows to move, type to filter][0m
+[0;39m  HTTPS[0m
+[0;1;36m> SSH[0m
+7[1A[0G8[0G[2K[1A[0G[2K[1A[0G[2K[1A[0G[2K[0;1;92m? [0m[0;1;99mWhat is your preferred protocol for Git operations?[0m  [0;36m[Use arrows to move, type to filter][0m
+[0;1;36m> HTTPS[0m
+[0;39m  SSH[0m
+7[1A[0G[1A[0G8[?25h8[0G[2K[1A[0G[2K[1A[0G[2K[1A[0G[2K[0;1;92m? [0m[0;1;99mWhat is your preferred protocol for Git operations?[0m[0;36m HTTPS[0m
+7[?25l8[0G[2K[0;1;92m? [0m[0;1;99mHow would you like to authenticate GitHub CLI?[0m  [0;36m[Use arrows to move, type to filter][0m
+[0;1;36m> Login with a web browser[0m
+[0;39m  Paste an authentication token[0m
+7[1A[0G[1A[0G8[0G[2K[1A[0G[2K[1A[0G[2K[1A[0G[2K[0;1;92m? [0m[0;1;99mHow would you like to authenticate GitHub CLI?[0m  [0;36m[Use arrows to move, type to filter][0m
+[0;39m  Login with a web browser[0m
+[0;1;36m> Paste an authentication token[0m
+7[1A[0G8[?25h8[0G[2K[1A[0G[2K[1A[0G[2K[1A[0G[2K[0;1;92m? [0m[0;1;99mHow would you like to authenticate GitHub CLI?[0m[0;36m Paste an authentication token[0m
+Tip: you can generate a Personal Access Token here https://github.com/settings/tokens
+The minimum required scopes are 'repo', 'read:org', 'workflow'.
+[0;1;92m? [0m[0;1;99mPaste your authentication token: [0m[?25l7[999;999f[6n8[?25h[6n****************************************[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D[1D
+[1B[0G- gh config set -h github.com git_protocol https
+[0;32m✓[0m Configured git protocol
+[0;32m✓[0m Logged in as [0;1;39mameliayinn[0m
+[?2004h(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ git push origin main
+[?2004lEnumerating objects: 52, done.
+Counting objects:   1% (1/52)Counting objects:   3% (2/52)Counting objects:   5% (3/52)Counting objects:   7% (4/52)Counting objects:   9% (5/52)Counting objects:  11% (6/52)Counting objects:  13% (7/52)Counting objects:  15% (8/52)Counting objects:  17% (9/52)Counting objects:  19% (10/52)Counting objects:  21% (11/52)Counting objects:  23% (12/52)Counting objects:  25% (13/52)Counting objects:  26% (14/52)Counting objects:  28% (15/52)Counting objects:  30% (16/52)Counting objects:  32% (17/52)Counting objects:  34% (18/52)Counting objects:  36% (19/52)Counting objects:  38% (20/52)Counting objects:  40% (21/52)Counting objects:  42% (22/52)Counting objects:  44% (23/52)Counting objects:  46% (24/52)Counting objects:  48% (25/52)Counting objects:  50% (26/52)Counting objects:  51% (27/52)Counting objects:  53% (28/52)Counting objects:  55% (29/52)Counting objects:  57% (30/52)Counting objects:  59% (31/52)Counting objects:  61% (32/52)Counting objects:  63% (33/52)Counting objects:  65% (34/52)Counting objects:  67% (35/52)Counting objects:  69% (36/52)Counting objects:  71% (37/52)Counting objects:  73% (38/52)Counting objects:  75% (39/52)Counting objects:  76% (40/52)Counting objects:  78% (41/52)Counting objects:  80% (42/52)Counting objects:  82% (43/52)Counting objects:  84% (44/52)Counting objects:  86% (45/52)Counting objects:  88% (46/52)Counting objects:  90% (47/52)Counting objects:  92% (48/52)Counting objects:  94% (49/52)Counting objects:  96% (50/52)Counting objects:  98% (51/52)Counting objects: 100% (52/52)Counting objects: 100% (52/52), done.
+Delta compression using up to 64 threads
+Compressing objects:   1% (1/52)Compressing objects:   3% (2/52)Compressing objects:   5% (3/52)Compressing objects:   7% (4/52)Compressing objects:   9% (5/52)Compressing objects:  11% (6/52)Compressing objects:  13% (7/52)Compressing objects:  15% (8/52)Compressing objects:  17% (9/52)Compressing objects:  19% (10/52)Compressing objects:  21% (11/52)Compressing objects:  23% (12/52)Compressing objects:  25% (13/52)Compressing objects:  26% (14/52)Compressing objects:  28% (15/52)Compressing objects:  30% (16/52)Compressing objects:  32% (17/52)Compressing objects:  34% (18/52)Compressing objects:  36% (19/52)Compressing objects:  38% (20/52)Compressing objects:  40% (21/52)Compressing objects:  42% (22/52)Compressing objects:  44% (23/52)Compressing objects:  46% (24/52)Compressing objects:  48% (25/52)Compressing objects:  50% (26/52)Compressing objects:  51% (27/52)Compressing objects:  53% (28/52)Compressing objects:  55% (29/52)Compressing objects:  57% (30/52)Compressing objects:  59% (31/52)Compressing objects:  61% (32/52)Compressing objects:  63% (33/52)Compressing objects:  65% (34/52)Compressing objects:  67% (35/52)Compressing objects:  69% (36/52)Compressing objects:  71% (37/52)Compressing objects:  73% (38/52)Compressing objects:  75% (39/52)Compressing objects:  76% (40/52)Compressing objects:  78% (41/52)Compressing objects:  80% (42/52)Compressing objects:  82% (43/52)Compressing objects:  84% (44/52)Compressing objects:  86% (45/52)Compressing objects:  88% (46/52)Compressing objects:  90% (47/52)Compressing objects:  92% (48/52)Compressing objects:  94% (49/52)Compressing objects:  96% (50/52)Compressing objects:  98% (51/52)Compressing objects: 100% (52/52)Compressing objects: 100% (52/52), done.
+Writing objects:   1% (1/52)Writing objects:   3% (2/52)Writing objects:   5% (3/52)Writing objects:   7% (4/52)Writing objects:   9% (5/52)Writing objects:  11% (6/52)Writing objects:  13% (7/52)Writing objects:  15% (8/52)Writing objects:  17% (9/52)Writing objects:  19% (10/52)Writing objects:  21% (11/52)Writing objects:  23% (12/52)Writing objects:  25% (13/52)Writing objects:  26% (14/52)Writing objects:  28% (15/52)Writing objects:  30% (16/52)Writing objects:  32% (17/52)Writing objects:  34% (18/52)Writing objects:  36% (19/52)Writing objects:  38% (20/52)Writing objects:  40% (21/52)Writing objects:  42% (22/52)Writing objects:  44% (23/52)Writing objects:  46% (24/52)Writing objects:  48% (25/52)Writing objects:  50% (26/52)Writing objects:  51% (27/52)Writing objects:  53% (28/52)Writing objects:  55% (29/52)Writing objects:  57% (30/52)Writing objects:  59% (31/52)Writing objects:  63% (33/52)Writing objects:  65% (34/52)Writing objects:  69% (36/52)Writing objects:  75% (39/52)Writing objects:  76% (40/52)Writing objects:  78% (41/52)Writing objects:  80% (42/52)Writing objects:  82% (43/52)Writing objects:  84% (44/52)Writing objects:  86% (45/52)Writing objects:  88% (46/52)Writing objects:  92% (48/52)Writing objects:  94% (49/52)Writing objects:  96% (50/52)Writing objects:  98% (51/52)Writing objects: 100% (52/52)Writing objects: 100% (52/52), 733.47 KiB | 10.19 MiB/s, done.
+Total 52 (delta 11), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas:   0% (0/11)[Kremote: Resolving deltas:   9% (1/11)[Kremote: Resolving deltas:  18% (2/11)[Kremote: Resolving deltas:  27% (3/11)[Kremote: Resolving deltas:  36% (4/11)[Kremote: Resolving deltas:  45% (5/11)[Kremote: Resolving deltas:  54% (6/11)[Kremote: Resolving deltas:  63% (7/11)[Kremote: Resolving deltas:  72% (8/11)[Kremote: Resolving deltas:  81% (9/11)[Kremote: Resolving deltas:  90% (10/11)[Kremote: Resolving deltas: 100% (11/11)[Kremote: Resolving deltas: 100% (11/11), done.[K
+To https://github.com/ameliayinn/diffusion_noise_agent.git
+ * [new branch]      main -> main
+[?2004h(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ [K(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ [K(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ [K(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ [K(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ [K(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ [K(ywj) yli045@7b9adf13479a:~/diffusion_noise_agent$ cp ../diffusion_noise/.gu[Kitignore 
