@@ -80,3 +80,22 @@ class ReparamGaussianMoE(nn.Module):
             output = output_flat  # 保持 [batch, input_dim]
 
         return output
+
+
+# 使用示例
+if __name__ == "__main__":
+    # 参数设置
+    input_dim = 32
+    num_experts = 4
+
+    # 测试矩阵输入（flatten=True）
+    model_matrix = ReparamGaussianMoE(input_dim, flatten=True)
+    x_matrix = torch.randn(4, 10, input_dim)  # [batch, seq_len, input_dim]
+    output_matrix = model_matrix(x_matrix)
+    print("矩阵输入输出形状:", output_matrix.shape)  # [4, 10, 32]
+
+    # 测试向量输入（flatten=False）
+    model_vector = ReparamGaussianMoE(input_dim, flatten=False)
+    x_vector = torch.randn(4, input_dim)  # [batch, input_dim]
+    output_vector = model_vector(x_vector)
+    print("向量输入输出形状:", output_vector.shape)  # [4, 32]
