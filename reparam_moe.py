@@ -91,8 +91,6 @@ class ReparamGaussianMoE(nn.Module):
 
         return output
 
-'''
-
 # 使用示例
 if __name__ == "__main__":
     # 参数设置
@@ -110,5 +108,3 @@ if __name__ == "__main__":
     x_vector = torch.randn(4, input_dim)  # [batch, input_dim]
     output_vector = model_vector(x_vector)
     print("向量输入输出形状:", output_vector.shape)  # [4, 32]
-
-'''

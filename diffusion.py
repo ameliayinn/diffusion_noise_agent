@@ -27,7 +27,7 @@ class DiffusionProcess:
         if use_moe:
             moe_config = moe_config or {}
             self.moe = ReparamGaussianMoE(
-                input_dim=image_size**2,
+                input_dim=3 * image_size**2,
                 num_experts=moe_config.get('num_experts', 4),
                 hidden_dim=moe_config.get('hidden_dim', 64),
                 tau=moe_config.get('tau', 0.1),
