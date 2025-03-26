@@ -1,0 +1,2 @@
+epoch,loss,image_size,batch_size,timesteps,time_emb_dim,learning_rate
+1,1.35546875,8,1,100,32,0.0002
