@@ -6,8 +6,8 @@ import torch.nn.functional as F
 from torch.utils.data.distributed import DistributedSampler
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from diffusion import linear_beta_schedule
-from unet import UNetSimulation
+from archive.diffusion_2 import linear_beta_schedule
+from archive.unet_1 import UNetSimulation
 import torchvision
 import matplotlib.pyplot as plt
 import pandas as pd

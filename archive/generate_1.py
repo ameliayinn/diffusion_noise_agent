@@ -4,9 +4,9 @@ import torchvision
 import matplotlib.pyplot as plt
 import os
 import numpy as np
-from diffusion import DiffusionProcess
+from archive.diffusion_2 import DiffusionProcess
 from tqdm import tqdm
-from unet import UNetSimulation
+from archive.unet_1 import UNetSimulation
 import torch.nn as nn
 
 @torch.no_grad()

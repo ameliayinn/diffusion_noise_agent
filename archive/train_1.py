@@ -8,8 +8,8 @@ import torch.nn.functional as F
 from torch.utils.data.distributed import DistributedSampler
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from diffusion import linear_beta_schedule
-from unet import UNetSimulation
+from archive.diffusion_2 import linear_beta_schedule
+from archive.unet_1 import UNetSimulation
 import torchvision
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -24,20 +24,20 @@ def train_deepspeed(config):
     def get_function(type, use_different_noise):
         if type == 'data':
             from utils.dataloader import load_data
-            from generate import generate_during_training
+            from archive.generate_1 import generate_during_training
         else:
             if use_different_noise:
-                from generate import generate_during_training_simulation_dif as generate_during_training
+                from archive.generate_1 import generate_during_training_simulation_dif as generate_during_training
             else:
-                from generate import generate_during_training_simulation as generate_during_training
+                from archive.generate_1 import generate_during_training_simulation as generate_during_training
             if type == 'normal':
                 from utils.dataloader import load_data_normal as load_data
             elif type == 'poisson':
                 from utils.dataloader import load_data_poisson as load_data
         if use_different_noise:
-            from diffusion import forward_diffusion_with_different_noise as forward_diffusion
+            from archive.diffusion_2 import forward_diffusion_with_different_noise as forward_diffusion
         else:
-            from diffusion import forward_diffusion
+            from archive.diffusion_2 import forward_diffusion
         return load_data, generate_during_training, forward_diffusion
     
     """DeepSpeed训练主函数"""
