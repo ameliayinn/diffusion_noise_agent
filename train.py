@@ -1,15 +1,14 @@
 # train.py
 import os
 import torch
-import torch.nn as nn
 import deepspeed
 from torch.optim.lr_scheduler import MultiStepLR
 import torch.nn.functional as F
 from torch.utils.data.distributed import DistributedSampler
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from archive.diffusion_2 import linear_beta_schedule
-from archive.unet_1 import UNetSimulation
+from diffusion import linear_beta_schedule, forward_diffusion_with_moe
+from unet import UNetSimulation
 import torchvision
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -17,27 +16,26 @@ import datetime
 import numpy as np
 import json
 from collections import Counter
-from archive.reparam_moe_2 import ReparamGaussianMoE
 
 def train_deepspeed(config):
     """函数引用"""
     def get_function(type, use_different_noise):
         if type == 'data':
             from utils.dataloader import load_data
-            from archive.generate_1 import generate_during_training
+            from generate import generate_during_training
         else:
             if use_different_noise:
-                from archive.generate_1 import generate_during_training_simulation_dif as generate_during_training
+                from generate import generate_during_training_simulation_dif as generate_during_training
             else:
-                from archive.generate_1 import generate_during_training_simulation as generate_during_training
+                from generate import generate_during_training_simulation as generate_during_training
             if type == 'normal':
                 from utils.dataloader import load_data_normal as load_data
             elif type == 'poisson':
                 from utils.dataloader import load_data_poisson as load_data
         if use_different_noise:
-            from archive.diffusion_2 import forward_diffusion_with_different_noise as forward_diffusion
+            from diffusion import forward_diffusion_with_different_noise as forward_diffusion
         else:
-            from archive.diffusion_2 import forward_diffusion
+            from diffusion import forward_diffusion
         return load_data, generate_during_training, forward_diffusion
     
     """DeepSpeed训练主函数"""
@@ -51,14 +49,7 @@ def train_deepspeed(config):
     config.logs_dir = os.path.join(config.logs_dir, f"logs_{timestamp}")
     
     # 初始化模型
-    # 初始化模型 (修改这部分)
-    base_model = UNetSimulation(time_emb_dim=config.time_emb_dim, image_size=config.image_size)
-    moe_layer = ReparamGaussianMoE(input_dim=config.image_size,  # 根据实际情况调整
-                                  num_experts=config.num_experts,  # 添加到config中
-                                  hidden_dim=64,
-                                  tau=0.1,
-                                  flatten=True)
-    model = nn.Sequential(base_model, moe_layer)  # 组合模型
+    model = UNetSimulation(time_emb_dim=config.time_emb_dim, image_size=config.image_size)
     parameters = filter(lambda p: p.requires_grad, model.parameters())
     
     # DeepSpeed配置 (移除scheduler部分)
@@ -151,30 +142,27 @@ def train_deepspeed(config):
             images = batch["image"].to(model_engine.device)
             # images = images.unsqueeze(1)  # 增加通道维度，形状变为 [batch_size, 1, 10, 10]
             images = images.to(torch.float16)
-            # images = images.to(next(model_engine.parameters()).dtype)  # 确保类型一致
             # print(type(images))  # 应该是 <class 'torch.Tensor'>
             # print(images.shape)  # 应该是 [B, 1, H, W]
-            # t = torch.randint(0, config.timesteps, (images.size(0),)).to(model_engine.device).to(torch.long)
             t = torch.randint(0, config.timesteps, (images.size(0),)).to(model_engine.device)
             p = config.num1 / (config.num1 + config.num2)
             # p = 0.5
             # print('----****p****----', p)
             
             # 前向扩散
-            noisy_images, noise = forward_diffusion(
+            # 使用MoE生成噪声
+            noisy_images, noise = forward_diffusion_with_moe(
+                model_engine.module,  # 注意DeepSpeed的模型访问方式
                 images, t,
                 sqrt_alphas_cumprod,
-                sqrt_one_minus_alphas_cumprod,
-                p=p
+                sqrt_one_minus_alphas_cumprod
             )
             
-            # 预测噪声(修改)
-            base_pred = model_engine.module[0](noisy_images, t)  # UNet预测
-            final_pred = model_engine.module[1](base_pred)       # MoE细化
+            # 预测噪声
+            pred_noise = model_engine(noisy_images, t)
             
             # 计算损失
-            mse_loss = F.mse_loss(final_pred, noise)
-            loss = mse_loss
+            loss = F.mse_loss(pred_noise, noise)
             
             # 反向传播
             model_engine.backward(loss)
@@ -208,7 +196,7 @@ def train_deepspeed(config):
             )
             torch.save(model_engine.module.state_dict(), model_path)
             
-            if (epoch + 1) % 1 == 0:
+            if (epoch + 1) % 20 == 0:
                 os.makedirs(config.samples_dir, exist_ok=True)
                 
                 # 生成样本

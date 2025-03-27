@@ -1,7 +1,7 @@
 # diffusion.py
 import torch
 import numpy as np
-from reparam_moe import ReparamGaussianMoE  # 导入MoE模块
+from archive.reparam_moe_2 import ReparamGaussianMoE  # 导入MoE模块
 
 class DiffusionProcess:
     def __init__(self, timesteps, image_size, use_moe=False, moe_config=None):

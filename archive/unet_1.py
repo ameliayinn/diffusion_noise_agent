@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-from reparam_moe import ReparamGaussianMoE
+from archive.reparam_moe_2 import ReparamGaussianMoE
 
 class SinusoidalPositionEmbeddings(nn.Module):
     def __init__(self, dim):
