@@ -8,7 +8,7 @@ from torch.utils.data.distributed import DistributedSampler
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from diffusion import linear_beta_schedule, forward_diffusion_with_moe
-from unet import UNetSimulation
+from unet import UNetSimulationWithMoE
 import torchvision
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -49,7 +49,7 @@ def train_deepspeed(config):
     config.logs_dir = os.path.join(config.logs_dir, f"logs_{timestamp}")
     
     # 初始化模型
-    model = UNetSimulation(time_emb_dim=config.time_emb_dim, image_size=config.image_size)
+    model = UNetSimulationWithMoE(time_emb_dim=config.time_emb_dim, image_size=config.image_size, num_experts=config.num_experts, moe_hidden_dim=config.moe_hidden_dim, moe_tau=config.moe_tau)
     parameters = filter(lambda p: p.requires_grad, model.parameters())
     
     # DeepSpeed配置 (移除scheduler部分)

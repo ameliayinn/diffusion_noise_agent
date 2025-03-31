@@ -216,7 +216,7 @@ class UNetSimulation(nn.Module):
         return self.final_conv(x)
 
 class UNetSimulationWithMoE(nn.Module):
-    def __init__(self, time_emb_dim=128, image_size=64, num_experts=4):
+    def __init__(self, time_emb_dim, image_size, num_experts=4, moe_hidden_dim=64, moe_tau=0.1):
         super().__init__()
         # 时间嵌入处理（image_size -> time_emb_dim）
         self.time_embed = nn.Sequential(
@@ -227,7 +227,7 @@ class UNetSimulationWithMoE(nn.Module):
         )
         
         # 下采样路径
-        self.conv1 = nn.Conv2d(1, image_size, 3, padding=1)
+        self.conv1 = nn.Conv2d(8, image_size, 3, padding=1)
         self.down1 = DownBlock(image_size, image_size * 2, time_emb_dim=time_emb_dim)
         self.down2 = DownBlock(image_size * 2, image_size * 4, time_emb_dim=time_emb_dim)
         self.down3 = DownBlock(image_size * 4, image_size * 8, time_emb_dim=time_emb_dim)
@@ -248,7 +248,8 @@ class UNetSimulationWithMoE(nn.Module):
         self.moe = ReparamGaussianMoE(
             input_dim=image_size,  # MoE输入维度
             num_experts=num_experts,
-            hidden_dim=64,
+            hidden_dim=moe_hidden_dim,
+            tau=moe_tau,
             flatten=False  # 输入已是2D [B, C, H, W]
         )
 
@@ -264,15 +265,38 @@ class UNetSimulationWithMoE(nn.Module):
         x3 = self.down2(x2, t_embed)
         x = self.down3(x3, t_embed)
         
+        # 中间处理
+        x = self.mid_conv1(x)
+        # 应用时间嵌入
+        scale, shift = self.mid_time_proj(t_embed).chunk(2, dim=1)
+        x = x * (scale[:, :, None, None] + 1) + shift[:, :, None, None]
+        x = self.mid_norm(x)
+        x = self.mid_act(x)
+        
+        # 上采样路径
+        x = self.up1(x, x3, t_embed)
+        x = self.up2(x, x2, t_embed)
+        x = self.up3(x, x1, t_embed)
+        
+        # 确保输入final_proj的形状是[B,64,H,W]
+        # print(f"输入final_proj前的形状: {x.shape}")  # 应为[B,64,H,W]
         x = self.final_proj(x)  # [B, C, H, W]
         
         # 将空间维度展平为特征维度
         B, C, H, W = x.shape
+        
+        '''
         x_flat = x.permute(0, 2, 3, 1).reshape(B, H*W, C)  # [B, H*W, C]
+        x_flat = x_flat.reshape(-1, C)  # [B*H*W, C] （强制展平以满足MoE输入要求）
+        '''
+        # 转换为MoE需要的2D输入 [B, C]
+        x_flat = x.mean(dim=[2, 3])  # 全局平均池化 → [B, 8]
         
         # 通过MoE生成输出
-        output = self.moe(x_flat)  # [B, H*W, C]
+        moe_out = self.moe(x_flat)  # [B, H*W, C]
         
         # 恢复空间维度
-        output = output.reshape(B, H, W, C).permute(0, 3, 1, 2)  # [B, C, H, W]
+        # output = moe_out.reshape(B, H, W, C).permute(0, 3, 1, 2)  # [B, C, H, W]
+        output = moe_out[:, :, None, None].expand(-1, -1, H, W)  # [B,8,H,W]
+        
         return output
