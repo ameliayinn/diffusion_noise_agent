@@ -206,7 +206,7 @@ def train_deepspeed(config):
                 )
                 os.makedirs(sample_dir, exist_ok=True)
                 
-                generate_during_training(model_engine, sample_dir, config, epoch, num_images=config.num_images//config.image_size, p=p)
+                generate_during_training(model_engine, sample_dir, config, epoch, num_images=config.num_images//config.image_size)
                 # generate_during_training(model_engine, sample_dir, config, num_images=config.num_images)
             
             # print(f"Epoch {epoch+1} | Loss: {loss.item():.4f} | Samples saved to {sample_dir}")

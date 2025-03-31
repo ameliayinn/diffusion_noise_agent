@@ -201,7 +201,7 @@ def generate_during_training_simulation(model_engine, save_dir, config, num_imag
     plt.ylabel("Frequency")
     plt.savefig(os.path.join(save_dir, "samples.png"))
 
-def generate_during_training_simulation_dif(model_engine, save_dir, config, epoch, num_images=16, mu1=-0.3, mu2=0.5, sigma1=0.95, sigma2=0.95, p=0.5):
+def generate_during_training_simulation_dif(model_engine, save_dir, config, epoch, num_images=16):
     """在训练过程中生成样本并保存
     Args:
         model_engine: DeepSpeed 模型引擎
@@ -220,18 +220,48 @@ def generate_during_training_simulation_dif(model_engine, save_dir, config, epoc
     sqrt_one_minus_alphas_cumprod = torch.sqrt(1. - alphas_cumprod)
     
     """ 采样来自混合高斯分布的噪声 """
-    b = torch.bernoulli(torch.full((num_images, 1, 1, 1), p, device=device))  # 选择哪个高斯分布
-    noise1 = torch.randn(num_images, 1, config.image_size, config.image_size, device=device, dtype=torch.half) * sigma1 + mu1
-    noise2 = torch.randn(num_images, 1, config.image_size, config.image_size, device=device, dtype=torch.half) * sigma2 + mu2
-    x = b * noise1 + (1 - b) * noise2
+    # 方案1：完全随机初始化 + 依赖模型去噪
+    # x = torch.randn(num_images, 1, config.image_size, config.image_size, device=device)
+    
+    # 方案2（可选）：若需保留部分手动控制，可通过config传递参数
+    x = model_engine.module.sample_initial_noise(num_images, config) 
     
     x = x.to(next(model_engine.parameters()).dtype)
+    
+    # 创建参数记录文件（如果不存在）
+    params_csv_path = os.path.join(save_dir, "distribution_params.csv")
+    if not os.path.exists(params_csv_path):
+        with open(params_csv_path, 'w') as f:
+            f.write("epoch,timestep,expert_idx,mu,sigma\n")  # 表头
     
     # 反向扩散过程
     for t in reversed(range(0, config.timesteps)):
         t_batch = torch.full((num_images,), t, device=device, dtype=torch.long)
         pred_noise = model_engine(x, t_batch)
         
+        # --- 新增：提取并保存分布参数 ---
+        if t % 100 == 0:  # 每100个timestep保存一次
+            # 获取当前MoE层的参数
+            moe = model_engine.module.moe
+            dummy_input = torch.zeros(1, moe.input_dim, device=device)
+            
+            # 提取所有专家的mu和logvar
+            mus = torch.stack([expert(dummy_input) for expert in moe.expert_mu]).squeeze(1)  # [num_experts, input_dim]
+            logvars = torch.stack([expert(dummy_input) for expert in moe.expert_logvar]).squeeze(1)
+            sigmas = torch.exp(0.5 * logvars)
+            
+            # 写入CSV
+            with open(params_csv_path, 'a') as f:
+                for expert_idx in range(moe.num_experts):
+                    for dim in range(moe.input_dim):
+                        f.write(
+                            f"{epoch},{t},{expert_idx},"
+                            f"{mus[expert_idx, dim].item():.6f},"
+                            f"{sigmas[expert_idx, dim].item():.6f}\n"
+                        )
+        # ------------------------------
+        
+        # 更新x
         alpha_t = alphas[t]
         alpha_cumprod_t = alphas_cumprod[t]
         beta_t = betas[t]
@@ -248,6 +278,7 @@ def generate_during_training_simulation_dif(model_engine, save_dir, config, epoc
     x = x.to(torch.float32)  # 最终转换为 float32 以便保存和处理
     # print("----****x2 in epoch ", epoch, "****----", x)
     
+    '''
     with open(os.path.join(save_dir, "samples.txt"), "w") as f:
         res_list = []
         for i in range(num_images):
@@ -257,6 +288,11 @@ def generate_during_training_simulation_dif(model_engine, save_dir, config, epoc
                 flattened_row = row.flatten().tolist()
                 for item in flattened_row:
                     res_list.append(item)
+        f.write(str(res_list))
+    '''
+    
+    with open(os.path.join(save_dir, "samples.txt"), "w") as f:
+        res_list = x.cpu().detach().numpy().flatten().tolist()
         f.write(str(res_list))
     
     # 确定横坐标范围

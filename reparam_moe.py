@@ -90,6 +90,26 @@ class ReparamGaussianMoE(nn.Module):
             output = output_flat  # 保持[batch, input_dim]
 
         return output
+    
+    def sample_initial_noise(self, num_samples, config=None):
+        # 默认使用模型学到的分布采样
+        dummy_input = torch.zeros(num_samples, self.input_dim, device=self.device)
+        gate_logits = self.gate(dummy_input)
+        expert_weights = F.gumbel_softmax(gate_logits, tau=self.tau, hard=False)
+        
+        mus = torch.stack([expert(dummy_input) for expert in self.expert_mu], dim=1)
+        logvars = torch.stack([expert(dummy_input) for expert in self.expert_logvar], dim=1)
+        
+        eps = torch.randn_like(mus)
+        samples = mus + eps * torch.exp(0.5 * logvars)
+        return (expert_weights.unsqueeze(-1) * samples).sum(dim=1)
+    
+    def get_distribution_params(self, x):
+        """返回当前输入的分布参数"""
+        mus = torch.stack([expert(x) for expert in self.expert_mu], dim=1)  # [B, num_experts, input_dim]
+        logvars = torch.stack([expert(x) for expert in self.expert_logvar], dim=1)
+        gate_weights = F.softmax(self.gate(x), dim=-1)  # [B, num_experts]
+        return mus, logvars, gate_weights
 
 '''
 # 使用示例
