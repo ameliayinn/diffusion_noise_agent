@@ -250,7 +250,7 @@ class UNetSimulationWithMoE(nn.Module):
             num_experts=num_experts,
             hidden_dim=moe_hidden_dim,
             tau=moe_tau,
-            flatten=False  # 输入已是2D [B, C, H, W]
+            flatten=True  # 输入已是2D [B, C, H, W]
         )
 
     def forward(self, x, t):

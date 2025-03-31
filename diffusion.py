@@ -92,9 +92,12 @@ def forward_diffusion_with_different_noise_1(x0_1, x0_2, t, sqrt_alphas_cumprod,
 
 def forward_diffusion_with_moe(model, x0, t, sqrt_alphas_cumprod, sqrt_one_minus_alphas_cumprod):
     """使用模型预测的混合高斯噪声"""
+    assert x0.dim() == 4, "输入必须是4D张量[B,C,H,W]"
     # 模型预测噪声分布参数
-    with torch.no_grad():
-        pred_params = model(x0, t)  # 输出已包含混合高斯的采样结果
+    # with torch.no_grad():
+    pred_params = model(x0, t)  # 输出已包含混合高斯的采样结果
+    print(f"x0形状: {x0.shape}, 模型输出形状: {pred_params.shape}")
+    assert pred_params.shape == x0.shape, f"模型输出形状{pred_params.shape}与输入{x0.shape}不匹配"
     
     # 直接使用模型输出作为噪声
     noise = pred_params  # [B, C, H, W]
