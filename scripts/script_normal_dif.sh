@@ -22,6 +22,10 @@ deepspeed --num_gpus $num_gpus --master_port $master_port main.py \
     --num_images 10000 \
     --simulation_distribution "normal"\
     --use_different_noise \
+    --use_moe \
+    --num_experts 4\
+    --moe_hidden_dim 64\
+    --moe_tau 0.1\
 
 deepspeed --num_gpus $num_gpus --master_port $master_port main.py \
     --image_size 8 \
@@ -44,6 +48,10 @@ deepspeed --num_gpus $num_gpus --master_port $master_port main.py \
     --num_images 10000 \
     --simulation_distribution "normal"\
     --use_different_noise \
+    --use_moe \
+    --num_experts 4\
+    --moe_hidden_dim 64\
+    --moe_tau 0.1\
 
 deepspeed --num_gpus $num_gpus --master_port $master_port main.py \
     --image_size 8 \
@@ -66,6 +74,10 @@ deepspeed --num_gpus $num_gpus --master_port $master_port main.py \
     --num_images 10000 \
     --simulation_distribution "normal"\
     --use_different_noise \
+    --use_moe \
+    --num_experts 4\
+    --moe_hidden_dim 64\
+    --moe_tau 0.1\
 
 deepspeed --num_gpus $num_gpus --master_port $master_port main.py \
     --image_size 8 \
@@ -88,6 +100,10 @@ deepspeed --num_gpus $num_gpus --master_port $master_port main.py \
     --num_images 10000 \
     --simulation_distribution "normal"\
     --use_different_noise \
+    --use_moe \
+    --num_experts 4\
+    --moe_hidden_dim 64\
+    --moe_tau 0.1\
 
 deepspeed --num_gpus $num_gpus --master_port $master_port main.py \
     --image_size 8 \
@@ -110,6 +126,10 @@ deepspeed --num_gpus $num_gpus --master_port $master_port main.py \
     --num_images 10000 \
     --simulation_distribution "normal"\
     --use_different_noise \
+    --use_moe \
+    --num_experts 4\
+    --moe_hidden_dim 64\
+    --moe_tau 0.1\
 
 deepspeed --num_gpus $num_gpus --master_port $master_port main.py \
     --image_size 8 \
@@ -132,3 +152,7 @@ deepspeed --num_gpus $num_gpus --master_port $master_port main.py \
     --num_images 10000 \
     --simulation_distribution "normal"\
     --use_different_noise \
+    --use_moe \
+    --num_experts 4\
+    --moe_hidden_dim 64\
+    --moe_tau 0.1\

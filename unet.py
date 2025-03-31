@@ -227,7 +227,7 @@ class UNetSimulationWithMoE(nn.Module):
         )
         
         # 下采样路径
-        self.conv1 = nn.Conv2d(8, image_size, 3, padding=1)
+        self.conv1 = nn.Conv2d(1, image_size, 3, padding=1)
         self.down1 = DownBlock(image_size, image_size * 2, time_emb_dim=time_emb_dim)
         self.down2 = DownBlock(image_size * 2, image_size * 4, time_emb_dim=time_emb_dim)
         self.down3 = DownBlock(image_size * 4, image_size * 8, time_emb_dim=time_emb_dim)
@@ -244,16 +244,17 @@ class UNetSimulationWithMoE(nn.Module):
         self.up3 = UpBlock(image_size * 2, image_size, time_emb_dim=time_emb_dim)
         
         # 替换最终输出层为MoE
-        self.final_proj = nn.Conv2d(image_size, image_size, 3, padding=1)
+        self.final_proj = nn.Conv2d(image_size, 1, 3, padding=1)
         self.moe = ReparamGaussianMoE(
-            input_dim=image_size,  # MoE输入维度
+            input_dim=1,  # MoE输入维度
             num_experts=num_experts,
             hidden_dim=moe_hidden_dim,
             tau=moe_tau,
-            flatten=True  # 输入已是2D [B, C, H, W]
+            flatten=False  # 输入已是2D [B, C, H, W]
         )
 
     def forward(self, x, t):
+        assert x.dim() == 4, f"输入必须是4D张量，但得到 {x.shape}"
         x = x.to(next(self.parameters()).dtype)
         t = t.to(next(self.parameters()).dtype)
         t = t.to(next(self.parameters()).dtype)
@@ -281,22 +282,25 @@ class UNetSimulationWithMoE(nn.Module):
         # 确保输入final_proj的形状是[B,64,H,W]
         # print(f"输入final_proj前的形状: {x.shape}")  # 应为[B,64,H,W]
         x = self.final_proj(x)  # [B, C, H, W]
+        # print(f"输入final_proj后的形状: {x.shape}")  # 应为[B,64,H,W]
         
         # 将空间维度展平为特征维度
         B, C, H, W = x.shape
         
-        '''
-        x_flat = x.permute(0, 2, 3, 1).reshape(B, H*W, C)  # [B, H*W, C]
-        x_flat = x_flat.reshape(-1, C)  # [B*H*W, C] （强制展平以满足MoE输入要求）
-        '''
+        
+        # x_flat = x.permute(0, 2, 3, 1).reshape(B, H*W, C)  # [B, H*W, C]
+        # x_flat = x_flat.reshape(-1, C)  # [B*H*W, C] （强制展平以满足MoE输入要求）
+        
         # 转换为MoE需要的2D输入 [B, C]
         x_flat = x.mean(dim=[2, 3])  # 全局平均池化 → [B, 8]
+        # print(f"x_flat的形状: {x_flat.shape}")
         
         # 通过MoE生成输出
         moe_out = self.moe(x_flat)  # [B, H*W, C]
+        # print(f"moe_out的形状: {moe_out.shape}")
         
         # 恢复空间维度
         # output = moe_out.reshape(B, H, W, C).permute(0, 3, 1, 2)  # [B, C, H, W]
         output = moe_out[:, :, None, None].expand(-1, -1, H, W)  # [B,8,H,W]
-        
+        # print(f"output的形状: {output.shape}")
         return output

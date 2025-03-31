@@ -8,7 +8,7 @@ from torch.utils.data.distributed import DistributedSampler
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from diffusion import linear_beta_schedule, forward_diffusion_with_moe
-from unet import UNetSimulationWithMoE
+from unet import UNetSimulationWithMoE, UNetSimulation
 import torchvision
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -50,6 +50,7 @@ def train_deepspeed(config):
     
     # 初始化模型
     model = UNetSimulationWithMoE(time_emb_dim=config.time_emb_dim, image_size=config.image_size, num_experts=config.num_experts, moe_hidden_dim=config.moe_hidden_dim, moe_tau=config.moe_tau)
+    # model = UNetSimulation(time_emb_dim=config.time_emb_dim, image_size=config.image_size)
     parameters = filter(lambda p: p.requires_grad, model.parameters())
     
     # DeepSpeed配置 (移除scheduler部分)
@@ -143,7 +144,7 @@ def train_deepspeed(config):
             # images = images.unsqueeze(1)  # 增加通道维度，形状变为 [batch_size, 1, 10, 10]
             images = images.to(torch.float16)
             # print(type(images))  # 应该是 <class 'torch.Tensor'>
-            # print(images.shape)  # 应该是 [B, 1, H, W]
+            # print('----****images.shape****----', images.shape)  # 应该是 [B, 1, H, W]
             t = torch.randint(0, config.timesteps, (images.size(0),)).to(model_engine.device)
             p = config.num1 / (config.num1 + config.num2)
             # p = 0.5

@@ -4,7 +4,7 @@ master_port=29500
 deepspeed --num_gpus $num_gpus --master_port $master_port main.py \
     --image_size 8 \
     --batch_size 256 \
-    --num_epochs 200 \
+    --num_epochs 1000 \
     --timesteps 1000 \
     --lr 2e-4 \
     --time_emb_dim 256 \

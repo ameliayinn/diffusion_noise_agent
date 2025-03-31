@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 
 class ReparamGaussianMoE(nn.Module):
-    def __init__(self, input_dim, num_experts=4, hidden_dim=64, tau=0.1, flatten=True):
+    def __init__(self, input_dim, num_experts=4, hidden_dim=64, tau=0.1, flatten=False):
         """
         Args:
             input_dim: 输入特征维度
@@ -91,18 +91,41 @@ class ReparamGaussianMoE(nn.Module):
 
         return output
     
-    def sample_initial_noise(self, num_samples, config=None):
-        # 默认使用模型学到的分布采样
-        dummy_input = torch.zeros(num_samples, self.input_dim, device=self.device)
+    def sample_initial_noise(self, num_samples,config=None):
+        """
+        生成4D噪声张量 [B, C, H, W]
+        
+        Args:
+            num_samples: 批次大小 (B)
+            image_height: 噪声图像高度 (H)
+            image_width: 噪声图像宽度 (W)
+            config: 可选配置
+        """
+        device = next(self.parameters()).device
+        dtype = next(self.parameters()).dtype
+        image_size = config.image_size
+        
+        # 生成基础噪声 [B, input_dim]
+        dummy_input = torch.zeros(num_samples*image_size*image_size, self.input_dim, device=device, dtype=dtype)
+        
+        # 获取各专家参数
         gate_logits = self.gate(dummy_input)
         expert_weights = F.gumbel_softmax(gate_logits, tau=self.tau, hard=False)
         
-        mus = torch.stack([expert(dummy_input) for expert in self.expert_mu], dim=1)
+        mus = torch.stack([expert(dummy_input) for expert in self.expert_mu], dim=1)  # [B, num_experts, input_dim]
         logvars = torch.stack([expert(dummy_input) for expert in self.expert_logvar], dim=1)
         
+        # 重参数化采样
         eps = torch.randn_like(mus)
-        samples = mus + eps * torch.exp(0.5 * logvars)
-        return (expert_weights.unsqueeze(-1) * samples).sum(dim=1)
+        samples = mus + eps * torch.exp(0.5 * logvars)  # [B, num_experts, input_dim]
+        
+        # 加权合并专家输出 [B, input_dim]
+        combined_samples = (expert_weights.unsqueeze(-1) * samples).sum(dim=1)
+        
+        # 转换为4D噪声 [B, C=1, H, W]
+        noise_4d = combined_samples.view(num_samples, 1, image_size, image_size)
+        
+        return noise_4d
     
     def get_distribution_params(self, x):
         """返回当前输入的分布参数"""

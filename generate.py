@@ -224,7 +224,7 @@ def generate_during_training_simulation_dif(model_engine, save_dir, config, epoc
     # x = torch.randn(num_images, 1, config.image_size, config.image_size, device=device)
     
     # 方案2（可选）：若需保留部分手动控制，可通过config传递参数
-    x = model_engine.module.sample_initial_noise(num_images, config) 
+    x = model_engine.module.moe.sample_initial_noise(num_images, config)
     
     x = x.to(next(model_engine.parameters()).dtype)
     
@@ -243,7 +243,10 @@ def generate_during_training_simulation_dif(model_engine, save_dir, config, epoc
         if t % 100 == 0:  # 每100个timestep保存一次
             # 获取当前MoE层的参数
             moe = model_engine.module.moe
-            dummy_input = torch.zeros(1, moe.input_dim, device=device)
+            
+            # 确保 dummy_input 的数据类型和模型一致
+            dtype = next(model_engine.parameters()).dtype
+            dummy_input = torch.zeros(1, moe.input_dim, device=device, dtype=dtype)
             
             # 提取所有专家的mu和logvar
             mus = torch.stack([expert(dummy_input) for expert in moe.expert_mu]).squeeze(1)  # [num_experts, input_dim]
