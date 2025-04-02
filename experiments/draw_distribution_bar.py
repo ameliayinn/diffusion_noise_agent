@@ -14,8 +14,8 @@ def read_data(file_path):
     return data
 
 # 文件路径
-file1 = 'experiments/dif_noise_7/2_2_5_4_099_dif.txt'
-file2 = 'tools/normal_data_2_2_5_4_099.txt'
+file1 = 'experiments/dif_noise_agent_1/4_1_10_4_090_dif.txt'
+file2 = 'tools/normal_data_4_1_10_4_090.txt'
 # file1 = 'experiments/dif_noise_4/1_10_080_dif.txt'
 # file2 = 'tools/poisson_data_1_10_080.txt'
 
