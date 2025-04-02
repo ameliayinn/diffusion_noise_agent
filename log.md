@@ -62,3 +62,11 @@ samples/samples_2025_03_20_21_14 4_1_10_4_060 different_noise(mu1=-0.3, mu2=0.5,
 samples/samples_2025_03_20_21_30 2_2_5_4_060 different_noise(mu1=-0.3, mu2=0.5, sigma1=0.95, sigma2=0.95, p=0.6)
 samples/samples_2025_03_20_21_44 4_1_10_4_099 different_noise(mu1=-0.3, mu2=0.5, sigma1=0.95, sigma2=0.95, p=0.99)
 samples/samples_2025_03_20_22_01 2_2_5_4_099 different_noise(mu1=-0.3, mu2=0.5, sigma1=0.95, sigma2=0.95, p=0.99)
+
+experiments/dif_noise_agent_1
+samples/samples_2025_04_01_05_20 4_1_10_4_090
+samples/samples_2025_04_01_05_45 2_2_5_4_090
+samples/samples_2025_04_01_06_12 4_1_10_4_060
+samples/samples_2025_04_01_06_38 2_2_5_4_060
+samples/samples_2025_04_01_07_04 4_1_10_4_099
+samples/samples_2025_04_01_07_30 2_2_5_4_099

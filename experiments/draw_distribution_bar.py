@@ -14,8 +14,8 @@ def read_data(file_path):
     return data
 
 # 文件路径
-file1 = 'experiments/dif_noise_agent_1/4_1_10_4_090_dif.txt'
-file2 = 'tools/normal_data_4_1_10_4_090.txt'
+file1 = 'experiments/dif_noise_agent_1/2_2_5_4_099_dif.txt'
+file2 = 'tools/normal_data_2_2_5_4_099.txt'
 # file1 = 'experiments/dif_noise_4/1_10_080_dif.txt'
 # file2 = 'tools/poisson_data_1_10_080.txt'
 
@@ -36,7 +36,7 @@ plt.hist(data2, bins=bins, alpha=alpha, color='red', label=f'input (total {len(d
 # plt.xlim(-50, 100)  # 设置 x 轴范围为 -10 到 20
 
 # 添加标题和标签
-plt.title(f"{file1[24:-4]}")
+plt.title(f"{file1[30:-4]}")
 # plt.title("4_1_10_4_090")
 plt.xlabel('Value')
 plt.ylabel('Density')
